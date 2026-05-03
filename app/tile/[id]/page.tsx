@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { toast } from 'react-hot-toast';
-
+import { authClient } from '@/lib/auth-client';  // ← ADD THIS LINE
 
 const DUMMY_TILES = [
   { id: 1, name: "Marble White Classic", price: 45, category: "Marble", image: "/images/marble-white.jpg", dimensions: "60x60cm, 80x80cm, 120x120cm", finish: "Polished", usage: "Floor, Wall", rating: 4.8, reviews: 124 },
@@ -25,18 +25,48 @@ export default function TileDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
 
-  useEffect(() => {
+useEffect(() => {
+  const checkAuthAndLoadTile = async () => {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const result = await authClient.getSession();
+    
+    // BetterAuth returns data in result.data
+    const session = result.data?.session;
+    const user = result.data?.user;
+    
+    if (!session || !user) {
+      toast.error("Please log in to view tile details 🔒");
+      router.push("/login");
+      return;
+    }
+
     const found = DUMMY_TILES.find(t => t.id === Number(params.id));
     if (!found) {
       router.push('/all-tiles');
       return;
     }
+    
     setTile(found);
     setIsLoading(false);
-  }, [params.id, router]);
+  };
 
-  const handleAddToCart = () => {
+  checkAuthAndLoadTile();
+}, [params.id, router]);
+
+const handleAddToCart = async () => {
+  try {
+    const result = await authClient.getSession();
+    const session = result.data?.session;
+    
+    if (!session) {
+      toast.error("Please log in to add items to cart 🔒");
+      router.push("/login");
+      return;
+    }
+
     if (!tile) return;
+    
     addToCart({
       id: tile.id,
       name: tile.name,
@@ -44,9 +74,14 @@ export default function TileDetailsPage() {
       image: tile.image,
       quantity: quantity
     });
+    
     toast.success(`${tile.name} added to cart! 🛒`);
-  };
-
+  } catch (err) {
+    console.error('Cart error:', err);
+    toast.error("Please login to continue");
+    router.push("/login");
+  }
+};
   const incrementQty = () => setQuantity(prev => prev + 1);
   const decrementQty = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 

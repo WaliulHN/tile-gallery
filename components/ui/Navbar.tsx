@@ -8,10 +8,17 @@ import { toast } from 'react-hot-toast';
 
 export default function Navbar() {
   const pathname = usePathname();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ADD THIS FUNCTION
+  const handleLogout = async () => {
+    await authClient.signOut();
+    toast.success('Logged out successfully!');
+    setSession(null);
+  };
+
+  // ... rest of your code
   useEffect(() => {
     authClient.getSession().then(({ data }) => {
       setSession(data);
@@ -19,11 +26,6 @@ export default function Navbar() {
     });
   }, []);
 
-  const handleLogout = async () => {
-    await authClient.signOut();
-    toast.success('Logged out successfully!');
-    setSession(null);
-  };
 
   if (isLoading) return null;
 

@@ -1,25 +1,76 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { toast } from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
+  const router = useRouter();
 
+useEffect(() => {
+  const checkAuth = async () => {
+    // Small delay to ensure BetterAuth session is ready
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    const result = await authClient.getSession();
+    const session = result.data?.session; // 👈 THIS IS THE FIX!
+    
+    if (!session) {
+      toast.error("Please log in to view your cart 🔒");
+      router.push("/login");
+    }
+  };
+  checkAuth();
+}, [router]);
   const handleCheckout = () => {
     toast.success('Proceeding to checkout! 🚀');
   };
 
   if (cart.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-12 text-center">
-        <div className="text-6xl mb-6">🛒</div>
-        <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
-        <p className="text-base-content/70 mb-8">
-          Looks like you haven't added any tiles yet.
+      <div style={{
+        minHeight: '80vh',
+        backgroundColor: '#0a0a0a',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#e2e8f0',
+        fontFamily: 'system-ui, -apple-system, sans-serif'
+      }}>
+        <div style={{ 
+          width: '100px', 
+          height: '100px', 
+          borderRadius: '50%', 
+          backgroundColor: '#111', 
+          border: '2px solid #1e293b', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          fontSize: '40px',
+          marginBottom: '32px'
+        }}>🛒</div>
+        <h1 style={{ fontSize: '32px', fontWeight: '800', color: '#fff', marginBottom: '16px' }}>Your Cart is Empty</h1>
+        <p style={{ color: '#94a3b8', fontSize: '18px', marginBottom: '40px', maxWidth: '400px', textAlign: 'center' }}>
+          Looks like you haven't added any tiles yet. Browse our premium collection to find the perfect match.
         </p>
-        <Link href="/all-tiles" className="btn btn-primary">
+        <Link 
+          href="/all-tiles" 
+          style={{ 
+            padding: '16px 40px', 
+            backgroundColor: '#14b8a6', 
+            color: '#fff', 
+            borderRadius: '12px', 
+            textDecoration: 'none', 
+            fontSize: '16px', 
+            fontWeight: '700',
+            transition: 'all 0.3s ease'
+          }}
+        >
           Browse All Tiles
         </Link>
       </div>
@@ -27,98 +78,204 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8">Shopping Cart 🛒</h1>
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: '#0a0a0a', 
+      color: '#e2e8f0',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      padding: '60px 24px 100px'
+    }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+        
+        {/* Header */}
+        <div style={{ marginBottom: '60px' }}>
+          <h1 style={{ fontSize: '42px', fontWeight: '800', color: '#fff', marginBottom: '8px' }}>Shopping Cart</h1>
+          <p style={{ color: '#64748b', fontSize: '16px' }}>
+            You have <span style={{ color: '#14b8a6', fontWeight: '600' }}>{cart.length}</span> {cart.length === 1 ? 'item' : 'items'} in your cart.
+          </p>
+        </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
-        <div className="lg:col-span-2 space-y-4">
-          {cart.map((item: any) => (
-            <div key={item.id} className="card bg-base-200 shadow-xl">
-              <div className="card-body">
-                <div className="flex gap-4">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-24 h-24 object-cover rounded-lg"
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '60px', alignItems: 'start' }}>
+          
+          {/* Cart Items List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {cart.map((item: any) => (
+              <div 
+                key={item.id} 
+                style={{ 
+                  backgroundColor: '#111', 
+                  borderRadius: '16px', 
+                  padding: '24px', 
+                  border: '1px solid #1e293b',
+                  display: 'flex', 
+                  gap: '24px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.borderColor = '#14b8a6'}
+                onMouseOut={(e) => e.currentTarget.style.borderColor = '#1e293b'}
+              >
+                {/* Image */}
+                <div style={{ 
+                  width: '120px', 
+                  height: '120px', 
+                  borderRadius: '12px', 
+                  overflow: 'hidden', 
+                  backgroundColor: '#1e293b',
+                  flexShrink: 0
+                }}>
+                  <img 
+                    src={item.image} 
+                    alt={item.name} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    onError={(e) => { e.currentTarget.src = 'https://placehold.co/150x150/1e293b/94a3b8?text=Tile'; }}
                   />
-                  <div className="flex-1">
-                    <h3 className="font-bold text-lg">{item.name}</h3>
-                    <p className="text-primary font-semibold">${item.price}/sqft</p>
-                    
-                    <div className="flex items-center gap-3 mt-3">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="btn btn-sm btn-circle"
-                        disabled={item.quantity <= 1}
-                      >
-                        -
-                      </button>
-                      <span className="font-semibold">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="btn btn-sm btn-circle"
-                      >
-                        +
-                      </button>
-                    </div>
+                </div>
+
+                {/* Details */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <Link 
+                      href={`/tile/${item.id}`} 
+                      style={{ color: '#fff', textDecoration: 'none', fontSize: '20px', fontWeight: '700' }}
+                    >
+                      {item.name}
+                    </Link>
+                    <p style={{ color: '#64748b', fontSize: '14px', marginTop: '4px' }}>Premium {item.category || 'Tile'} Collection</p>
+                    <p style={{ color: '#14b8a6', fontSize: '18px', fontWeight: '600', marginTop: '8px' }}>${item.price} <span style={{ fontSize: '14px', color: '#64748b' }}>/ sqft</span></p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-primary">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
-                    <button
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px' }}>
+                    {/* Quantity Controls */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        disabled={item.quantity <= 1}
+                        style={{ 
+                          width: '36px', height: '36px', borderRadius: '8px', border: '1px solid #334155', 
+                          backgroundColor: 'transparent', color: '#e2e8f0', fontSize: '18px', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          opacity: item.quantity <= 1 ? 0.5 : 1
+                        }}
+                      >−</button>
+                      <span style={{ fontSize: '16px', fontWeight: '600', minWidth: '24px', textAlign: 'center' }}>{item.quantity}</span>
+                      <button 
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        style={{ 
+                          width: '36px', height: '36px', borderRadius: '8px', border: '1px solid #334155', 
+                          backgroundColor: 'transparent', color: '#e2e8f0', fontSize: '18px', cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}
+                      >+</button>
+                    </div>
+
+                    {/* Remove Button */}
+                    <button 
                       onClick={() => {
                         removeFromCart(item.id);
                         toast.success('Item removed from cart');
                       }}
-                      className="btn btn-sm btn-error mt-2"
+                      style={{ 
+                        background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', 
+                        fontSize: '14px', fontWeight: '600', textDecoration: 'underline'
+                      }}
                     >
                       Remove
                     </button>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          <button
-            onClick={() => {
-              clearCart();
-              toast.success('Cart cleared!');
-            }}
-            className="btn btn-outline btn-error"
-          >
-            Clear Cart
-          </button>
-        </div>
+            {/* Clear Cart Button */}
+            <button 
+              onClick={() => {
+                clearCart();
+                toast.success('Cart cleared!');
+              }}
+              style={{ 
+                alignSelf: 'flex-start',
+                padding: '12px 24px', 
+                backgroundColor: 'transparent', 
+                color: '#94a3b8', 
+                border: '1px solid #334155', 
+                borderRadius: '8px', 
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '600',
+                marginTop: '16px',
+                transition: 'all 0.2s'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.borderColor = '#ef4444';
+                e.currentTarget.style.color = '#ef4444';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.borderColor = '#334155';
+                e.currentTarget.style.color = '#94a3b8';
+              }}
+            >
+              Clear Cart
+            </button>
+          </div>
 
-        {/* Order Summary */}
-        <div className="lg:col-span-1">
-          <div className="card bg-base-200 shadow-xl sticky top-4">
-            <div className="card-body">
-              <h2 className="card-title text-2xl mb-4">Order Summary</h2>
+          {/* Order Summary */}
+          <div style={{ position: 'sticky', top: '100px' }}>
+            <div style={{ 
+              backgroundColor: '#111', 
+              borderRadius: '16px', 
+              padding: '32px', 
+              border: '1px solid #1e293b'
+            }}>
+              <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#fff', marginBottom: '32px' }}>Order Summary</h2>
               
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Items:</span>
-                  <span className="font-semibold">{cart.length}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontSize: '16px' }}>
+                  <span>Subtotal</span>
+                  <span>${totalPrice.toFixed(2)}</span>
                 </div>
-                <div className="divider my-2"></div>
-                <div className="flex justify-between text-xl font-bold">
-                  <span>Total:</span>
-                  <span className="text-primary">${totalPrice.toFixed(2)}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94a3b8', fontSize: '16px' }}>
+                  <span>Shipping</span>
+                  <span>Free</span>
+                </div>
+                <div style={{ height: '1px', backgroundColor: '#1e293b', margin: '8px 0' }}></div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fff', fontSize: '20px', fontWeight: '700' }}>
+                  <span>Total</span>
+                  <span style={{ color: '#14b8a6' }}>${totalPrice.toFixed(2)}</span>
                 </div>
               </div>
 
-              <button
+              <button 
                 onClick={handleCheckout}
-                className="btn btn-primary btn-block mt-6"
+                style={{ 
+                  width: '100%', 
+                  padding: '18px', 
+                  backgroundColor: '#14b8a6', 
+                  color: '#fff', 
+                  border: 'none', 
+                  borderRadius: '12px', 
+                  fontSize: '16px', 
+                  fontWeight: '700', 
+                  cursor: 'pointer',
+                  marginBottom: '16px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0d9488'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#14b8a6'}
               >
                 Proceed to Checkout →
               </button>
 
-              <Link href="/all-tiles" className="btn btn-ghost btn-block mt-2">
+              <Link 
+                href="/all-tiles" 
+                style={{ 
+                  display: 'block', 
+                  textAlign: 'center', 
+                  color: '#94a3b8', 
+                  textDecoration: 'none', 
+                  fontSize: '14px', 
+                  fontWeight: '600'
+                }}
+              >
                 Continue Shopping
               </Link>
             </div>
