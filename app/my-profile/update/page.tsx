@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 
 export default function UpdateProfilePage() {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -47,7 +47,7 @@ export default function UpdateProfilePage() {
 
     setIsUpdating(true);
 
-    // Simulate API call to update profile
+  
     setTimeout(() => {
       toast.success('Profile updated successfully! 🎉');
       setIsUpdating(false);
@@ -69,7 +69,7 @@ export default function UpdateProfilePage() {
     <div style={{ minHeight: '100vh', backgroundColor: '#0a0a0a', color: '#e2e8f0', fontFamily: 'system-ui, -apple-system, sans-serif', padding: '60px 24px 100px' }}>
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         
-        {/* Header */}
+       
         <div style={{ marginBottom: '48px' }}>
           <button 
             onClick={() => router.back()}
@@ -96,7 +96,7 @@ export default function UpdateProfilePage() {
           </p>
         </div>
 
-        {/* Update Form */}
+       
         <div style={{ 
           backgroundColor: '#111', 
           borderRadius: '24px', 
@@ -105,7 +105,7 @@ export default function UpdateProfilePage() {
         }}>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
             
-            {/* Profile Image Preview */}
+           
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <div style={{ 
                 width: '150px', 
@@ -137,7 +137,7 @@ export default function UpdateProfilePage() {
               </div>
             </div>
 
-            {/* Name Field */}
+        
             <div>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#94a3b8', marginBottom: '12px' }}>
                 Full Name *
@@ -171,7 +171,7 @@ export default function UpdateProfilePage() {
               />
             </div>
 
-            {/* Image URL Field */}
+           
             <div>
               <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#94a3b8', marginBottom: '12px' }}>
                 Profile Image URL
@@ -208,7 +208,7 @@ export default function UpdateProfilePage() {
               </p>
             </div>
 
-            {/* Action Buttons */}
+       
             <div style={{ display: 'flex', gap: '16px', paddingTop: '16px' }}>
               <button 
                 type="submit"

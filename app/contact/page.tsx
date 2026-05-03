@@ -27,7 +27,7 @@ export default function ContactPage() {
 
     setIsSubmitting(true);
 
-    // Simulate sending
+   
     setTimeout(() => {
       toast.success('Message sent successfully! We will contact you soon. 📩');
       setFormData({ name: '', email: '', subject: '', message: '' });
@@ -38,7 +38,7 @@ export default function ContactPage() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#0a0a0a', color: '#e2e8f0', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       
-      {/* Hero Section */}
+
       <div style={{ 
         position: 'relative', 
         padding: '100px 24px 60px', 
@@ -86,17 +86,17 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* Main Content */}
+   
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '80px 24px 100px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '80px', alignItems: 'start' }}>
           
-          {/* Left: Contact Info */}
+        
           <div>
             <h2 style={{ fontSize: '28px', fontWeight: '800', color: '#fff', marginBottom: '32px' }}>
               Contact Information
             </h2>
             
-            {/* Info Cards */}
+         
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '48px' }}>
               {[
                 { icon: '📍', title: 'Visit Us', detail: '123 Tile Street, Ceramic Avenue\nDhaka, Bangladesh', link: '#' },
@@ -148,7 +148,7 @@ export default function ContactPage() {
               ))}
             </div>
 
-            {/* Social Links */}
+           
             <div>
               <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#fff', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                 Follow Us
@@ -195,7 +195,7 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right: Contact Form */}
+          
           <div style={{ 
             backgroundColor: '#111', 
             borderRadius: '24px', 
@@ -211,7 +211,7 @@ export default function ContactPage() {
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               
-              {/* Name & Email Row */}
+             
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#94a3b8', marginBottom: '8px' }}>
@@ -279,7 +279,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Subject */}
+             
               <div>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#94a3b8', marginBottom: '8px' }}>
                   Subject
@@ -313,7 +313,7 @@ export default function ContactPage() {
                 />
               </div>
 
-              {/* Message */}
+             
               <div>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#94a3b8', marginBottom: '8px' }}>
                   Message *
@@ -349,7 +349,7 @@ export default function ContactPage() {
                 ></textarea>
               </div>
 
-              {/* Submit Button */}
+            
               <button 
                 type="submit"
                 disabled={isSubmitting}

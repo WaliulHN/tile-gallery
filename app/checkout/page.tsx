@@ -18,7 +18,7 @@ export default function CheckoutPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if cart is empty
+  
   if (cart.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -38,7 +38,6 @@ export default function CheckoutPage() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call / order processing
     setTimeout(() => {
       console.log('Order Placed:', {
         customer: formData,
@@ -46,13 +45,13 @@ export default function CheckoutPage() {
         total: totalPrice
       });
 
-      // Clear cart
+    
       clearCart();
       
-      // Show success message
+    
       toast.success('Order placed successfully! 🎉');
       
-      // Redirect to home
+    
       router.push('/');
       setIsSubmitting(false);
     }, 1500);
@@ -135,7 +134,6 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Order Summary */}
         <div className="lg:col-span-1">
           <div className="card bg-base-200 shadow-xl sticky top-4">
             <div className="card-body">

@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 
 export default function MyProfilePage() {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -45,7 +45,7 @@ export default function MyProfilePage() {
     <div style={{ minHeight: '100vh', backgroundColor: '#0a0a0a', color: '#e2e8f0', fontFamily: 'system-ui, -apple-system, sans-serif', padding: '60px 24px 100px' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         
-        {/* Header */}
+       
         <div style={{ marginBottom: '60px' }}>
           <h1 style={{ fontSize: '42px', fontWeight: '800', color: '#fff', marginBottom: '8px' }}>My Profile</h1>
           <p style={{ color: '#64748b', fontSize: '16px' }}>Manage your account settings and preferences</p>
@@ -53,7 +53,7 @@ export default function MyProfilePage() {
 
         <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '40px', alignItems: 'start' }}>
           
-          {/* Profile Card */}
+        
           <div style={{ 
             backgroundColor: '#111', 
             borderRadius: '24px', 
@@ -61,7 +61,7 @@ export default function MyProfilePage() {
             border: '1px solid #1e293b',
             textAlign: 'center'
           }}>
-            {/* Profile Image */}
+       
             <div style={{ 
               width: '150px', 
               height: '150px', 
@@ -115,9 +115,9 @@ export default function MyProfilePage() {
             </button>
           </div>
 
-          {/* Profile Details */}
+       
           <div>
-            {/* Personal Information */}
+           
             <div style={{ 
               backgroundColor: '#111', 
               borderRadius: '24px', 
@@ -199,7 +199,7 @@ export default function MyProfilePage() {
               </Link>
             </div>
 
-            {/* Account Stats */}
+       
             <div style={{ 
               backgroundColor: '#111', 
               borderRadius: '24px', 

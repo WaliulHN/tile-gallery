@@ -13,7 +13,7 @@ export default function CartPage() {
 
 useEffect(() => {
   const checkAuth = async () => {
-    // Small delay to ensure BetterAuth session is ready
+  
     await new Promise(resolve => setTimeout(resolve, 200));
     
     const result = await authClient.getSession();
@@ -131,7 +131,7 @@ useEffect(() => {
                   />
                 </div>
 
-                {/* Details */}
+               
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div>
                     <Link 
@@ -168,7 +168,7 @@ useEffect(() => {
                       >+</button>
                     </div>
 
-                    {/* Remove Button */}
+                  
                     <button 
                       onClick={() => {
                         removeFromCart(item.id);
