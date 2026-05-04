@@ -2,38 +2,41 @@ import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { MongoClient } from "mongodb";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+let authInstance: any = null;
+let dbPromise: Promise<any> | null = null;
 
-if (!MONGODB_URI) {
-  throw new Error("MONGODB_URI is not defined in environment variables");
-}
+// 1. Lazy Database Connection
+async function getDb() {
+  if (dbPromise) return dbPromise;
+  
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error("MONGODB_URI is not defined in environment variables");
+  }
 
-// Create client
-const client = new MongoClient(MONGODB_URI);
-
-// Connect immediately (this is okay in lib files)
-let db: any = null;
-
-async function initDb() {
-  if (db) return db;
-  await client.connect();
-  db = client.db();
-  console.log("✅ MongoDB Connected");
-  return db;
+  const client = new MongoClient(uri);
+  dbPromise = client.connect().then(c => c.db());
+  return dbPromise;
 }
 
 
-initDb().catch(console.error);
+export async function getAuth() {
+  if (authInstance) return authInstance;
 
-export const auth = betterAuth({
-  database: mongodbAdapter(client.db()),
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
-  },
-  user: {
-    additionalFields: {
-      photoUrl: { type: "string", required: false, defaultValue: "" },
+  const db = await getDb();
+  
+  authInstance = betterAuth({
+    database: mongodbAdapter(db),
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: false,
     },
-  },
-});
+    user: {
+      additionalFields: {
+        photoUrl: { type: "string", required: false, defaultValue: "" },
+      },
+    },
+  });
+
+  return authInstance;
+}

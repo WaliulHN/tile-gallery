@@ -1,6 +1,24 @@
-import { auth } from "@/lib/auth";
+import { getAuth } from "@/lib/auth";
+import { NextRequest } from "next/server";
 
-export const GET = auth.handler;
-export const POST = auth.handler;
-export const PUT = auth.handler;
-export const DELETE = auth.handler;
+
+async function handleRequest(request: NextRequest) {
+  const auth = await getAuth();
+  return auth.handler(request);
+}
+
+export async function GET(request: NextRequest) {
+  return handleRequest(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleRequest(request);
+}
+
+export async function PUT(request: NextRequest) {
+  return handleRequest(request);
+}
+
+export async function DELETE(request: NextRequest) {
+  return handleRequest(request);
+}
