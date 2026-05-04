@@ -5,15 +5,28 @@ import { MongoClient } from "mongodb";
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.warn("MONGODB_URI is not defined - auth will not work");
+  throw new Error("MONGODB_URI is not defined in environment variables");
 }
 
-// Create client but don't connect yet
-const client = MONGODB_URI ? new MongoClient(MONGODB_URI) : null;
+// Create client
+const client = new MongoClient(MONGODB_URI);
 
-// We'll let better-auth handle the connection
+// Connect immediately (this is okay in lib files)
+let db: any = null;
+
+async function initDb() {
+  if (db) return db;
+  await client.connect();
+  db = client.db();
+  console.log("✅ MongoDB Connected");
+  return db;
+}
+
+
+initDb().catch(console.error);
+
 export const auth = betterAuth({
-  database: client ? mongodbAdapter(client.db()) : undefined as any,
+  database: mongodbAdapter(client.db()),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
