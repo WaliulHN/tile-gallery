@@ -24,7 +24,6 @@ useEffect(() => {
   authClient.getSession().catch(() => {
     // Auth check failed, continue anyway
   }).finally(() => {
-    setIsLoading(false);
   });
 }, []);
 
