@@ -8,26 +8,18 @@ import { toast } from 'react-hot-toast';
 
 export default function Navbar() {
   const isLoading = false;
-    const session = null;
+  const session = null;
   const pathname = usePathname();
-   // Temporarily disable loading state
 
-  // ADD THIS FUNCTION
   const handleLogout = async () => {
-   await authClient.signOut();
-toast.success('Logged out successfully!');
-window.location.href = '/';
+    await authClient.signOut();
+    toast.success('Logged out successfully!');
+    window.location.href = '/';
   };
 
-  // ... rest of your code
-useEffect(() => {
-  authClient.getSession().catch(() => {
-    // Auth check failed, continue anyway
-  }).finally(() => {
-  });
-}, []);
-
-
+  useEffect(() => {
+    // Auth check removed - isLoading is already false
+  }, []);
 
   const navLinks = [
     { label: 'PRODUCTS', href: '/all-tiles' },
@@ -51,7 +43,7 @@ useEffect(() => {
           </div>
         </Link>
 
-        
+        {/* Navigation Links */}
         <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -78,51 +70,39 @@ useEffect(() => {
           })}
         </div>
 
-        
+        {/* Right Side: Login/Register, Search, Mobile Menu */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           
-       {session?.user ? (
-  <>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-      <Link href="/my-profile" style={{ textDecoration: 'none', color: '#333' }}>
-        {session.user.name}
-      </Link>
-      <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: '600' }}>
-        Logout
-      </button>
-    </div>
-  </>
-) : (
-  
-  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-  <Link 
-    href="/login" 
-    style={{ 
-      textDecoration: 'none', 
-      color: '#333',
-      fontWeight: '600',
-      fontSize: '13px'
-    }}
-  >
-    Login
-  </Link>
-  <Link 
-    href="/register" 
-    style={{ 
-      background: '#f97316',
-      color: '#fff',
-      padding: '8px 16px',
-      borderRadius: '6px',
-      textDecoration: 'none',
-      fontWeight: '600',
-      fontSize: '13px'
-    }}
-  >
-    Register
-  </Link>
-</div>
-)}
-          
+          {/* Login and Register Buttons - ONLY ONE SET */}
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <Link 
+              href="/login" 
+              style={{ 
+                textDecoration: 'none', 
+                color: '#333',
+                fontWeight: '600',
+                fontSize: '13px'
+              }}
+            >
+              Login
+            </Link>
+            <Link 
+              href="/register" 
+              style={{ 
+                background: '#f97316',
+                color: '#fff',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '13px'
+              }}
+            >
+              Register
+            </Link>
+          </div>
+
+          {/* Search Button */}
           <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}>
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="8" />
@@ -130,9 +110,8 @@ useEffect(() => {
             </svg>
           </button>
 
-          
-          
-        <button style={{ backgroundColor: '#f97316', border: 'none', cursor: 'pointer', padding: '8px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {/* Mobile Menu Button */}
+          <button style={{ backgroundColor: '#f97316', border: 'none', cursor: 'pointer', padding: '8px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="18" height="18" fill="white" viewBox="0 0 24 24">
               <path d="M4 6h16M4 12h16M4 18h16" stroke="white" strokeWidth="2" strokeLinecap="round" />
             </svg>
