@@ -14,19 +14,19 @@ export default function Navbar() {
 
   // ADD THIS FUNCTION
   const handleLogout = async () => {
-    await authClient.signOut();
-    toast.success('Logged out successfully!');
-    setSession(null);
+   await authClient.signOut();
+toast.success('Logged out successfully!');
+window.location.href = '/';
   };
 
   // ... rest of your code
-  useEffect(() => {
-    authClient.getSession().then(({ data }) => {
-      setSession(data);
-      setIsLoading(false);
-    });
-  }, []);
-
+useEffect(() => {
+  authClient.getSession().catch(() => {
+    // Auth check failed, continue anyway
+  }).finally(() => {
+    setIsLoading(false);
+  });
+}, []);
 
 
 

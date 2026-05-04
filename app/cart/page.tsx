@@ -35,7 +35,7 @@ useEffect(() => {
   const checkAuth = async () => {
     try {
       const result = await authClient.getSession().catch(() => null);
-      // Auth check complete - no need to store session state
+      
     } catch (error) {
       console.error("Cart auth check failed:", error);
     }
