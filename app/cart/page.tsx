@@ -34,15 +34,10 @@ export default function CartPage() {
 useEffect(() => {
   const checkAuth = async () => {
     try {
-      // Try to get session, but catch the error if it fails
       const result = await authClient.getSession().catch(() => null);
-      
-    if (result?.data?.session) {
-    setSession(result.data.session);
-}
+      // Auth check complete - no need to store session state
     } catch (error) {
       console.error("Cart auth check failed:", error);
-      // Keep going even if auth fails
     }
   };
 
