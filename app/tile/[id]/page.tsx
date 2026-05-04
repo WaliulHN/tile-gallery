@@ -386,7 +386,7 @@ const handleAddToCart = async () => {
                         ))}
                       </div>
                     </div>
-                    <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6' }}>{review.text}</p>
+                    <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6' }}>{review.text}</p> 
                   </div>
                 ))}
               </div>
