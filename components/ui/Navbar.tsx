@@ -7,9 +7,10 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 export default function Navbar() {
+  const isLoading = false;
+    const session = null;
   const pathname = usePathname();
-  const [session, setSession] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+   // Temporarily disable loading state
 
   // ADD THIS FUNCTION
   const handleLogout = async () => {
@@ -27,7 +28,7 @@ export default function Navbar() {
   }, []);
 
 
-  if (isLoading) return null;
+
 
   const navLinks = [
     { label: 'PRODUCTS', href: '/all-tiles' },
@@ -37,7 +38,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', position: 'sticky', top: 0, zIndex: 50, fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', position: 'sticky', top: 0, zIndex: 50 }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px' }}>
         
         {/* Logo */}
@@ -81,18 +82,47 @@ export default function Navbar() {
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           
-          {session?.user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', fontWeight: '600', color: '#333' }}>
-              <Link href="/my-profile" style={{ textDecoration: 'none', color: '#333' }}>{session.user.name}</Link>
-              <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: '600' }}>Logout</button>
-            </div>
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '13px', fontWeight: '600' }}>
-              <Link href="/login" style={{ textDecoration: 'none', color: '#333' }}>Login</Link>
-              <Link href="/register" style={{ textDecoration: 'none', color: '#f97316', border: '1px solid #f97316', padding: '6px 14px', borderRadius: '4px' }}>Register</Link>
-            </div>
-          )}
-
+       {session?.user ? (
+  <>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+      <Link href="/my-profile" style={{ textDecoration: 'none', color: '#333' }}>
+        {session.user.name}
+      </Link>
+      <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontWeight: '600' }}>
+        Logout
+      </button>
+    </div>
+  </>
+) : (
+  
+  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+  <Link 
+    href="/login" 
+    style={{ 
+      textDecoration: 'none', 
+      color: '#333',
+      fontWeight: '600',
+      fontSize: '13px'
+    }}
+  >
+    Login
+  </Link>
+  <Link 
+    href="/register" 
+    style={{ 
+      background: '#f97316',
+      color: '#fff',
+      padding: '8px 16px',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: '13px'
+    }}
+  >
+    Register
+  </Link>
+</div>
+)}
           
           <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}>
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">

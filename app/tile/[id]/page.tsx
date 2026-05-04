@@ -34,32 +34,28 @@ export default function TileDetailsPage() {
 
 useEffect(() => {
   const checkAuthAndLoadTile = async () => {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const result = await authClient.getSession();
-    
-    // BetterAuth returns data in result.data
-    const session = result.data?.session;
-    const user = result.data?.user;
-    
-    if (!session || !user) {
-      toast.error("Please log in to view tile details 🔒");
-      router.push("/login");
-      return;
+    try {
+      // Check auth (optional)
+      await authClient.getSession().catch(() => null);
+    } catch (error) {
+      console.error("Auth check failed:", error);
     }
 
-    const found = DUMMY_TILES.find(t => t.id === Number(params.id));
-    if (!found) {
-      router.push('/all-tiles');
-      return;
+    // Load tile data from DUMMY_TILES
+    const tileId = parseInt(params.id as string);
+    const foundTile = DUMMY_TILES.find(t => t.id === tileId);
+    
+    if (foundTile) {
+      setTile(foundTile);
     }
     
-    setTile(found);
     setIsLoading(false);
   };
 
-  checkAuthAndLoadTile();
-}, [params.id, router]);
+  if (params.id) {
+    checkAuthAndLoadTile();
+  }
+}, [params.id]);
 
 const handleAddToCart = async () => {
   try {

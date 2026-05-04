@@ -5,38 +5,54 @@ import { MongoClient } from "mongodb";
 let authInstance: any = null;
 let dbPromise: Promise<any> | null = null;
 
-// 1. Lazy Database Connection
 async function getDb() {
   if (dbPromise) return dbPromise;
   
   const uri = process.env.MONGODB_URI;
   if (!uri) {
-    throw new Error("MONGODB_URI is not defined in environment variables");
+    console.error("❌ MONGODB_URI is not defined");
+    throw new Error("MONGODB_URI is not defined");
   }
 
-  const client = new MongoClient(uri);
-  dbPromise = client.connect().then(c => c.db());
-  return dbPromise;
+  try {
+    const client = new MongoClient(uri);
+    dbPromise = client.connect().then(c => {
+      console.log("✅ MongoDB Connected");
+      return c.db();
+    });
+    return dbPromise;
+  } catch (error) {
+    console.error("❌ MongoDB connection failed:", error);
+    throw error;
+  }
 }
-
 
 export async function getAuth() {
   if (authInstance) return authInstance;
 
-  const db = await getDb();
-  
-  authInstance = betterAuth({
-    database: mongodbAdapter(db),
-    emailAndPassword: {
-      enabled: true,
-      requireEmailVerification: false,
-    },
-    user: {
-      additionalFields: {
-        photoUrl: { type: "string", required: false, defaultValue: "" },
+  try {
+    const db = await getDb();
+    
+    authInstance = betterAuth({
+      database: mongodbAdapter(db),
+      emailAndPassword: {
+        enabled: true,
+        requireEmailVerification: false,
       },
-    },
-  });
+      user: {
+        additionalFields: {
+          photoUrl: { type: "string", required: false, defaultValue: "" },
+        },
+      },
+      // ADD THIS:
+      trustedOrigins: ["http://localhost:3000", "https://beautiful-ganache-f0a383.netlify.app"],
+    });
 
-  return authInstance;
+    console.log("✅ BetterAuth initialized");
+    return authInstance;
+  } catch (error) {
+    console.error("❌ Auth initialization failed:", error);
+    throw error;
+  }
 }
+

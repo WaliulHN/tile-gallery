@@ -31,20 +31,23 @@ export default function CartPage() {
   }, []);
 
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      await new Promise(resolve => setTimeout(resolve, 200));
-      const result = await authClient.getSession();
-      const session = result.data?.session;
+useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      // Try to get session, but catch the error if it fails
+      const result = await authClient.getSession().catch(() => null);
       
-      if (!session) {
-        toast.error("Please log in to view your cart 🔒");
-        router.push("/login");
+      if (result?.session) {
+        setSession(result.session);
       }
-    };
-    checkAuth();
-  }, [router]);
+    } catch (error) {
+      console.error("Cart auth check failed:", error);
+      // Keep going even if auth fails
+    }
+  };
 
+  checkAuth();
+}, []);
 
   const cartItems = Array.isArray(cart) ? cart : [];
 
