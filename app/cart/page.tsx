@@ -37,9 +37,9 @@ useEffect(() => {
       // Try to get session, but catch the error if it fails
       const result = await authClient.getSession().catch(() => null);
       
-      if (result?.session) {
-        setSession(result.session);
-      }
+    if (result?.data?.session) {
+    setSession(result.data.session);
+}
     } catch (error) {
       console.error("Cart auth check failed:", error);
       // Keep going even if auth fails
