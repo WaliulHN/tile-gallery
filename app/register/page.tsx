@@ -62,7 +62,6 @@ export default function RegisterPage() {
       
       <div style={{ 
         display: 'none', 
-        md: 'flex', 
         flex: '1',
         backgroundColor: '#111',
         backgroundImage: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)',
@@ -83,7 +82,7 @@ export default function RegisterPage() {
             Join TilesGallery to access exclusive collections, track your orders, and get personalized recommendations for your dream interior.
           </p>
           
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0, space: '16px' }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0, gap: '16px' }}>
             <li style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
               <span style={{ width: '24px', height: '24px', background: '#f97316', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px' }}>✓</span>
               <span style={{ fontSize: '16px', fontWeight: '500' }}>Exclusive Member Pricing</span>

@@ -96,7 +96,7 @@ export default function AboutPage() {
             }}>
               Every Floor Tells a Story
             </h2>
-            <div style={{ space: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div style={{ marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <p style={{ fontSize: '16px', lineHeight: '1.8', color: '#94a3b8' }}>
                 At TilesGallery, we believe that every floor tells a story. Since 2020, we have been dedicated to bringing the finest selection of tiles to Bangladesh. From elegant marble to durable ceramics, our collection is curated to elevate your interior design.
               </p>

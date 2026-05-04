@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/lib/cart-context';
 import { toast } from 'react-hot-toast';
-import { authClient } from '@/lib/auth-client';  // ← ADD THIS LINE
+import { authClient } from '@/lib/auth-client';  
 
 const DUMMY_TILES = [
   { id: 1, name: "Marble White Classic", price: 45, category: "Marble", image: "/images/marble-white.jpg", dimensions: "60x60cm, 80x80cm, 120x120cm", finish: "Polished", usage: "Floor, Wall", rating: 4.8, reviews: 124 },
@@ -19,7 +19,14 @@ const DUMMY_TILES = [
 export default function TileDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const { addToCart } = useCart();
+  const { addToCart } = useCart() as {
+  addToCart: (item: any) => void;
+  cart: any[];
+  removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;
+  totalPrice: number;
+};
   const [tile, setTile] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);

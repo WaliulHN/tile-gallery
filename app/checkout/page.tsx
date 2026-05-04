@@ -7,16 +7,33 @@ import { toast } from 'react-hot-toast';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { cart, totalPrice, clearCart } = useCart();
+  
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
+    name: '',
+    email: '',
     address: '',
     city: '',
+    zipCode: '',
+    phone: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: ''
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  
+const { cart, totalPrice, clearCart } = useCart() as {
+  cart: any[];
+  removeFromCart: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
+  clearCart: () => void;  
+  totalPrice: number;
+};
+
+  
 
   
   if (cart.length === 0) {
@@ -76,7 +93,7 @@ export default function CheckoutPage() {
                   required
                   className="input input-bordered w-full"
                   placeholder="John Doe"
-                  value={formData.fullName}
+              value={formData.name}
                   onChange={handleChange}
                 />
               </div>

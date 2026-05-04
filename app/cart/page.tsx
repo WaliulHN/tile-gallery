@@ -2,35 +2,56 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '@/lib/cart-context';
 import { toast } from 'react-hot-toast';
 import { authClient } from '@/lib/auth-client';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
   const router = useRouter();
-
-useEffect(() => {
-  const checkAuth = async () => {
+  const [isClient, setIsClient] = useState(false);
   
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const result = await authClient.getSession();
-    const session = result.data?.session; // 👈 THIS IS THE FIX!
-    
-    if (!session) {
-      toast.error("Please log in to view your cart 🔒");
-      router.push("/login");
-    }
+ 
+  const { 
+    cart, 
+    removeFromCart, 
+    updateQuantity, 
+    clearCart, 
+    totalPrice 
+  } = useCart() as {
+    cart: any[];
+    removeFromCart: (id: number) => void;
+    updateQuantity: (id: number, quantity: number) => void;
+    clearCart: () => void;
+    totalPrice: number;
   };
-  checkAuth();
-}, [router]);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      const result = await authClient.getSession();
+      const session = result.data?.session;
+      
+      if (!session) {
+        toast.error("Please log in to view your cart 🔒");
+        router.push("/login");
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+
+  const cartItems = Array.isArray(cart) ? cart : [];
+
   const handleCheckout = () => {
     toast.success('Proceeding to checkout! 🚀');
   };
-
-  if (cart.length === 0) {
+if (!cart || (cart as any[]).length === 0) {
     return (
       <div style={{
         minHeight: '80vh',
@@ -91,7 +112,7 @@ useEffect(() => {
         <div style={{ marginBottom: '60px' }}>
           <h1 style={{ fontSize: '42px', fontWeight: '800', color: '#fff', marginBottom: '8px' }}>Shopping Cart</h1>
           <p style={{ color: '#64748b', fontSize: '16px' }}>
-            You have <span style={{ color: '#14b8a6', fontWeight: '600' }}>{cart.length}</span> {cart.length === 1 ? 'item' : 'items'} in your cart.
+            You have <span style={{ color: '#14b8a6', fontWeight: '600' }}>{cartItems.length}</span> {cartItems.length === 1 ? 'item' : 'items'} in your cart.
           </p>
         </div>
 
@@ -99,7 +120,7 @@ useEffect(() => {
           
           {/* Cart Items List */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {cart.map((item: any) => (
+            {cartItems.map((item: any) => (
               <div 
                 key={item.id} 
                 style={{ 

@@ -132,7 +132,7 @@ export default function AllTilesPage() {
             <Link 
               key={tile.id} 
               href={`/tile/${tile.id}`}
-              style={{ textDecoration: 'none', color: 'inherit', group: 'group' }}
+        style={{ textDecoration: 'none', color: 'inherit' }}
               className="tile-card-link"
             >
               <div style={{
