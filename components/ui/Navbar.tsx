@@ -1,42 +1,25 @@
+
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 
 export default function Navbar() {
-  const [session, setSession] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = false;
+  const session = null;
   const pathname = usePathname();
-  const router = useRouter();
 
   const handleLogout = async () => {
     await authClient.signOut();
     toast.success('Logged out successfully!');
-    router.push('/');
+    window.location.href = '/';
   };
 
-  // Check auth with timeout to prevent hanging
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // Add timeout to prevent hanging on Netlify
-        const result = await Promise.race([
-          authClient.getSession(),
-          new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000))
-        ]);
-        
-        setSession((result as any).data?.session || null);
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        setSession(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    checkAuth();
+  
   }, []);
 
   const navLinks = [
@@ -45,17 +28,6 @@ export default function Navbar() {
     { label: 'WHERE TO BUY', href: '/cart' },
     { label: 'CONTACT', href: '/contact' },
   ];
-
-  
-  if (isLoading) {
-    return (
-      <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px' }}>
-          <div style={{ color: '#999' }}>Loading...</div>
-        </div>
-      </nav>
-    );
-  }
 
   return (
     <nav style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb', position: 'sticky', top: 0, zIndex: 50 }}>
@@ -72,7 +44,7 @@ export default function Navbar() {
           </div>
         </Link>
 
-     
+       
         <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -99,85 +71,37 @@ export default function Navbar() {
           })}
         </div>
 
-      
+        
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           
-          {session?.user ? (
        
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <Link 
-                href="/my-profile" 
-                style={{ 
-                  textDecoration: 'none', 
-                  color: '#333',
-                  fontWeight: '600',
-                  fontSize: '13px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <div style={{ 
-                  width: '32px', 
-                  height: '32px', 
-                  borderRadius: '50%', 
-                  backgroundColor: '#f97316',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#fff',
-                  fontWeight: '700'
-                }}>
-                  {session.user.name?.[0]?.toUpperCase() || 'U'}
-                </div>
-                {session.user.name}
-              </Link>
-              <button 
-                onClick={handleLogout}
-                style={{ 
-                  background: 'none', 
-                  border: '1px solid #ef4444', 
-                  color: '#ef4444',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontWeight: '600',
-                  fontSize: '13px'
-                }}
-              >
-                Logout
-              </button>
-            </div>
-          ) : (
-        
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <Link 
-                href="/login" 
-                style={{ 
-                  textDecoration: 'none', 
-                  color: '#333',
-                  fontWeight: '600',
-                  fontSize: '13px'
-                }}
-              >
-                Login
-              </Link>
-              <Link 
-                href="/register" 
-                style={{ 
-                  background: '#f97316',
-                  color: '#fff',
-                  padding: '8px 16px',
-                  borderRadius: '6px',
-                  textDecoration: 'none',
-                  fontWeight: '600',
-                  fontSize: '13px'
-                }}
-              >
-                Register
-              </Link>
-            </div>
-          )}
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <Link 
+              href="/login" 
+              style={{ 
+                textDecoration: 'none', 
+                color: '#333',
+                fontWeight: '600',
+                fontSize: '13px'
+              }}
+            >
+              Login
+            </Link>
+            <Link 
+              href="/register" 
+              style={{ 
+                background: '#f97316',
+                color: '#fff',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '13px'
+              }}
+            >
+              Register
+            </Link>
+          </div>
 
          
           <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', padding: '4px' }}>
